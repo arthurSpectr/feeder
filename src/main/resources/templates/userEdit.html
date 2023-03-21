@@ -1,25 +1,26 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
+<head th:include="fragments/common :: headFragment"></head>
 <body>
-User editor
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:include="fragments/navbar :: navFragment"></nav>
+<div class="container mt-5">
 
-<form action="/user" method="post">
-    <input type="text" name="username" th:value="${user.username}">
+    User editor
 
-    <div th:each="role : ${roles}">
-        <label><input type="checkbox" th:name="${role}" th:checked="${user.roles != null && user.roles.contains(role)}" th:text="${role}"> </label>
-    </div>
+    <form action="/user" method="post">
+        <input type="text" name="username" th:value="${user.username}">
 
-    <input type="hidden" th:value="${user.id}" name="userId">
-    <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
-    <button type="submit">Save</button>
-</form>
+        <div th:each="role : ${roles}">
+            <label><input type="checkbox" th:name="${role}"
+                          th:checked="${user.roles != null && user.roles.contains(role)}" th:text="${role}"> </label>
+        </div>
+
+        <input type="hidden" th:value="${user.id}" name="userId">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+        <button type="submit">Save</button>
+    </form>
+</div>
+
+<th:block th:include="fragments/common :: footerFragment"></th:block>
 </body>
 </html>

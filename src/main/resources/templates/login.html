@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Spring Security Example </title>
-</head>
+<head th:include="fragments/common :: headFragment"></head>
 <body>
-Login page
-<form action="/login" method="post">
-    <div><label> User Name : <input type="text" name="username"/> </label></div>
-    <div><label> Password: <input type="password" name="password"/> </label></div>
-    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-    <div><input type="submit" value="Sign In"/></div>
-</form>
-<a href="/registration">Add new user</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:include="fragments/navbar :: navFragment"></nav>
+<div class="container mt-5">
+
+    <form action="/login" method="post" th:with="isRegisterForm=false" th:include="fragments/login :: loginFragment"></form>
+
+    <th:block th:include="fragments/common :: footerFragment"></th:block>
+</div>
 </body>
 </html>

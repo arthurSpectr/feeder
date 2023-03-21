@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Spring Security Example </title>
-</head>
+<head th:include="fragments/common :: headFragment"></head>
 <body>
-Add new user
-<div th:each="message : ${messages}">
-    <span th:value="${message}"></span>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:include="fragments/navbar :: navFragment"></nav>
+<div class="container mt-5">
+
+    Add new user
+    <div th:if="${message != null}">
+        <span th:value="${message}"></span>
+    </div>
+<!--    <form th:action="@{/registration}" method="post">-->
+<!--        <div><label> User Name : <input type="text" name="username"/> </label></div>-->
+<!--        <div><label> Password: <input type="password" name="password"/> </label></div>-->
+<!--        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>-->
+<!--        <div><input type="submit" value="Sign In"/></div>-->
+<!--    </form>-->
+
+    <form th:action="@{/registration}" method="post" th:with="isRegisterForm=true" th:include="fragments/login :: loginFragment"></form>
 </div>
-<form th:action="@{/registration}" method="post">
-    <div><label> User Name : <input type="text" name="username"/> </label></div>
-    <div><label> Password: <input type="password" name="password"/> </label></div>
-    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-    <div><input type="submit" value="Sign In"/></div>
-</form>
+
+<th:block th:include="fragments/common :: footerFragment"></th:block>
 </body>
 </html>

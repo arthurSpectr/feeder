@@ -1,34 +1,64 @@
 <html xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments/common :: headFragment"></head>
 
 <body>
-<div>
-    <form action="/logout" method="post">
-        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-        <input type="submit" value="Sign Out"/>
-    </form>
-    <span><a th:href="@{/user}">User List</a></span>
-</div>
-<div>
-    <form method="post">
-        <input type="text" name="text" placeholder="Введите сообщение" />
-        <input type="text" name="tag" placeholder="Тэг">
-        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-        <button type="submit">Добавить</button>
-    </form>
-</div>
-<div>Список сообщений</div>
-<form method="post" action="filter">
-    <input type="text" name="filter">
-    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-    <button type="submit">Найти</button>
-</form>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:include="fragments/navbar :: navFragment"></nav>
+<div class="container mt-5">
 
-<div th:each="message : ${messages}">
-    <b><span th:text="${message.id}"></span></b>
-    <span><span th:text="${message.text}"></span></span>
-    <i><span th:text="${message.tag}"></span></i>
-    <strong><span    th:text="${message.authorName}"></span></strong>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <form method="get" action="/main" class="form-inline">
+                <input type="text" name="filter" class="form-control" th:value="${filter}" placeholder="Search by tag">
+                <button type="submit" class="btn btn-primary ml-2">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+       aria-controls="collapseExample">
+        Add new Message
+    </a>
+
+    <div class="collapse" id="collapseExample">
+        <div class="form-group mt-3">
+            <form method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="text" placeholder="Введите сообщение"/>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="tag" placeholder="Тэг">
+                </div>
+                <div class="form-group">
+                    <div class="custom-file">
+                        <input type="file" name="file" id="customFile">
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                    </div>
+                </div>
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card-columns">
+        <div class="card my-3" th:each="message : ${messages}">
+            <img th:if="${message.filename != null}" th:src="@{${'/img/' + message.filename}}" class="card-img-top">
+
+            <div class="m-2">
+                <span th:text="${message.text}"></span>
+                <i th:text="${message.tag}"></i>
+            </div>
+            <div class="card-footer text-muted" th:text="${message.authorName}"></div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px" th:if="${#lists.isEmpty(messages)}">
+        <h3>No Messages found</h3>
+    </div>
 </div>
 
+<th:block th:include="fragments/common :: footerFragment"></th:block>
 </body>
 </html>
