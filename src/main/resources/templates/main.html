@@ -1,9 +1,9 @@
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <body>
 <div>
     <form action="/logout" method="post">
-        <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
         <input type="submit" value="Sign Out"/>
     </form>
 </div>
@@ -11,23 +11,23 @@
     <form method="post">
         <input type="text" name="text" placeholder="Введите сообщение" />
         <input type="text" name="tag" placeholder="Тэг">
-        <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
         <button type="submit">Добавить</button>
     </form>
 </div>
 <div>Список сообщений</div>
 <form method="post" action="filter">
     <input type="text" name="filter">
-    <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
     <button type="submit">Найти</button>
 </form>
-{{#messages}}
-<div>
-    <b>{{id}}</b>
-    <span>{{text}}</span>
-    <i>{{tag}}</i>
-    <strong>{{authorName}}</strong>
+
+<div th:each="message : ${messages}">
+    <b><span th:text="${message.id}"></span></b>
+    <span><span th:text="${message.text}"></span></span>
+    <i><span th:text="${message.tag}"></span></i>
+    <strong><span    th:text="${message.authorName}"></span></strong>
 </div>
-{{/messages}}
+
 </body>
 </html>
