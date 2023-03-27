@@ -7,16 +7,34 @@
 
     Add new user
     <div th:if="${message != null}">
-        <span th:value="${message}"></span>
+        <span th:text="${message}"></span>
     </div>
-<!--    <form th:action="@{/registration}" method="post">-->
-<!--        <div><label> User Name : <input type="text" name="username"/> </label></div>-->
-<!--        <div><label> Password: <input type="password" name="password"/> </label></div>-->
-<!--        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>-->
-<!--        <div><input type="submit" value="Sign In"/></div>-->
-<!--    </form>-->
 
-    <form th:action="@{/registration}" method="post" th:with="isRegisterForm=true" th:include="fragments/login :: loginFragment"></form>
+<!--    <form th:action="@{/registration}" method="post" th:with="isRegisterForm=true" th:include="fragments/login :: loginFragment" th:object="${user}"></form>-->
+
+    <form th:action="@{/registration}" method="post" th:object="${usr}">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">User Name :</label>
+            <div class="col-sm-6">
+<!--                <input type="text" name="username" class="form-control" th:field="*{username}" placeholder="User name" />-->
+                <input type="text" name="username" class="form-control" th:field="*{username}" placeholder="User name" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Password:</label>
+            <div class="col-sm-6">
+                <input type="password" name="password" class="form-control" th:field="*{password}" placeholder="Password" />
+            </div>
+        </div>
+        <div class="form-group row" >
+            <label class="col-sm-2 col-form-label">Email:</label>
+            <div class="col-sm-6">
+                <input type="email" name="email" class="form-control" th:field="*{email}" placeholder="some@some.com" />
+            </div>
+        </div>
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+        <button class="btn btn-primary" type="submit" >Create</button>
+    </form>
 </div>
 
 <th:block th:include="fragments/common :: footerFragment"></th:block>
