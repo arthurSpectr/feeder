@@ -10,8 +10,6 @@
         <span th:text="${message}"></span>
     </div>
 
-<!--    <form th:action="@{/registration}" method="post" th:with="isRegisterForm=true" th:include="fragments/login :: loginFragment" th:object="${user}"></form>-->
-
     <form th:action="@{/registration}" method="post" th:object="${usr}">
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">User Name :</label>
