@@ -10,6 +10,10 @@
         </div>
     </th:block>
 
+    <div th:if="${message != null}">
+        <div th:attr="class=${messageType == 'success' ? 'alert alert-success' : 'alert alert-danger' }" th:text="${message}"></div>
+    </div>
+
     <form action="/login" method="post" th:with="isRegisterForm=false" th:include="fragments/login :: loginFragment"></form>
 
     <th:block th:include="fragments/common :: footerFragment"></th:block>

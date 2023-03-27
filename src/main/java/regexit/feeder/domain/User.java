@@ -8,9 +8,9 @@ import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import regexit.feeder.domain.dto.UserDto;
 
 import java.util.Collection;
-import java.util.Set;
 
 @Entity
 @Table(name = "usr")
@@ -22,9 +22,6 @@ public class User implements UserDetails {
     private String username;
     @NotBlank(message = "Password cannot be empty")
     private String password;
-    @Transient
-    @NotBlank(message = "Password confirmation cannot be empty")
-    private String password2;
     private boolean active;
 
     @Email(message = "Email is not correct")
@@ -44,7 +41,6 @@ public class User implements UserDetails {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.password2 = password2;
         this.active = active;
         this.email = email;
         this.activationCode = activationCode;
@@ -54,7 +50,6 @@ public class User implements UserDetails {
     public User(UserDto dto) {
         this.username = dto.getUsername();
         this.password = dto.getPassword();
-        this.password2 = dto.getPassword2();
         this.email = dto.getEmail();
     }
 
@@ -141,13 +136,5 @@ public class User implements UserDetails {
 
     public void setActivationCode(String activationCode) {
         this.activationCode = activationCode;
-    }
-
-    public String getPassword2() {
-        return password2;
-    }
-
-    public void setPassword2(String password2) {
-        this.password2 = password2;
     }
 }

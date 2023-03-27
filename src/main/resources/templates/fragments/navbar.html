@@ -33,7 +33,7 @@
 
         <div class="navbar-text mr-3" th:text="${name}" th:value="${name}"></div>
 <!--        <div>-->
-            <form th:include="fragments/login :: logoutFragment"></form>
+            <form th:action="@{/logout}" method="post" th:include="fragments/login :: logoutFragment"></form>
 <!--    </div>-->
     </div>
 </nav>

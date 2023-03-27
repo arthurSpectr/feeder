@@ -28,7 +28,7 @@
 </form>
 
 <!--<div >-->
-    <form action="/logout" method="post" th:fragment="logoutFragment">
+    <form th:action="@{/logout}" method="post" th:fragment="logoutFragment">
         <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
         <button class="btn btn-primary" type="submit">Sign Out</button>
     </form>

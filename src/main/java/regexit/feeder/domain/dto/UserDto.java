@@ -1,4 +1,4 @@
-package regexit.feeder.domain;
+package regexit.feeder.domain.dto;
 
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
