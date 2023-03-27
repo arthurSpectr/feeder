@@ -1,0 +1,33 @@
+spring:
+  jpa:
+    generate-ddl: 'false'
+    show-sql: ${FEEDER_SHO_SQL:false}
+    hibernate:
+      ddl-auto: validate
+  mail:
+    host: smtp.gmail.com
+    username: ${FEEDER_MAIL_USERNAME:username}
+    password: ${FEEDER_MAIL_PASSWORD:password}
+    port: '587'
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: 'true'
+          auth: 'true'
+  datasource:
+    username: ${FEEDER_DB_USERNAME:username}
+    password: ${FEEDER_DB_PASSWORD:password}
+    url: ${FEEDER_DATASOURCE_URL:jdbc:postgresql://localhost/feeder}
+  session:
+    jdbc:
+      initialize-schema: always
+      table-name: SPRING_SESSION
+
+
+mail:
+  debug: ${FEEDER_MAIL_DEBUG:true}
+upload:
+  path: ${UPLOAD_PATH:/Users/arturtyan/files}
+recaptcha:
+  secret: ${FEEDER_RECAPTCHA_SECRET:secret}
