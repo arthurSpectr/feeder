@@ -1,15 +1,18 @@
 package regexit.feeder.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import regexit.feeder.domain.User;
 import regexit.feeder.domain.UserDto;
 import regexit.feeder.service.UserService;
 
-import java.awt.*;
+import javax.validation.Valid;
 import java.util.Map;
 
 @Controller
@@ -23,16 +26,25 @@ public class RegistrationController {
         return "registration";
     }
 
-    // Use DTO because somehow thymeleaf can't parse model, throw exception with id
-    @PostMapping(value = "/registration")
-    public String addUser(@ModelAttribute("usr") UserDto usr, Model model) {
-        User newUser = new User();
-        newUser.setUsername(usr.getUsername());
-        newUser.setPassword(usr.getPassword());
-        newUser.setEmail(usr.getEmail());
+    @PostMapping("/registration")
+    public String addUser(@Valid @ModelAttribute("usr") UserDto usr, BindingResult bindingResult, Model model) {
+
+        if (usr.getPassword() != null && !usr.getPassword().equals(usr.getPassword2())) {
+            model.addAttribute("passwordError", "Passwords are different!");
+        }
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
+
+            model.mergeAttributes(errors);
+
+            return "registration";
+        }
+
+        User newUser = new User(usr);
 
         if (!userService.addUser(newUser)) {
-            model.addAttribute("message", "User exists!");
+            model.addAttribute("usernameError", "User exists!");
             return "registration";
         }
 
