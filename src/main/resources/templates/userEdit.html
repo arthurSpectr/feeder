@@ -11,11 +11,11 @@
     User editor
 
     <form action="/user" method="post">
-        <input type="text" name="username" th:value="${user.username}">
+        <input type="text" name="username" th:value="${user.username}" />
 
         <div th:each="role : ${roles}">
             <label><input type="checkbox" th:name="${role}"
-                          th:checked="${user.roles != null && user.roles.contains(role)}" th:text="${role}"> </label>
+                          th:checked="${user.roles != null && user.roles.contains(role)}" th:text="${role}" /> </label>
         </div>
 
         <input type="hidden" th:value="${user.id}" name="userId">
