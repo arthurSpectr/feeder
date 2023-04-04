@@ -1,5 +1,9 @@
+<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="fragments/common :: headFragment"></head>
+<head>
+    <title>main</title>
+    <div th:replace="fragments/common :: headFragment"></div>
+</head>
 
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" th:include="fragments/navbar :: navFragment"></nav>
@@ -53,7 +57,9 @@
                 <span th:text="${message.text}"></span>
                 <i th:text="${message.tag}"></i>
             </div>
-            <div class="card-footer text-muted" th:text="${message.authorName}"></div>
+            <a th:href="@{${'/user-messages/' + message.author.id}}"><div class="card-footer text-muted" th:text="${message.authorName}"></div></a>
+            <a class="btn btn-primary" th:if="${message.author.id == currentUserId}" th:href="@{${'/user-messages/' + message.author.id + '?message=' + message.id}}">Edit</a>
+
         </div>
     </div>
 

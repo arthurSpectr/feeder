@@ -1,6 +1,11 @@
 <!DOCTYPE HTML>
 <html>
-<head th:include="fragments/common :: headFragment"></head>
+<!--<head th:include="fragments/common :: headFragment">-->
+<head >
+    <title>greeting</title>
+<!--    <div th:replace="fragments/head-fragment :: head"></div>-->
+    <div th:replace="fragments/common :: headFragment"></div>
+</head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" th:include="fragments/navbar :: navFragment"></nav>
 <div class="container mt-5">

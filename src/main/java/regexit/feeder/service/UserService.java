@@ -1,6 +1,7 @@
 package regexit.feeder.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
+
+    @Value("${hostname}")
+    private String hostname;
+
     @Autowired
     private UserRepo userRepo;
 
@@ -61,8 +66,9 @@ public class UserService implements UserDetailsService {
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
-                    "Welcome to Sweater. Please, visit next link: http://localhost:8080/activate/%s",
+                    "Welcome to Sweater. Please, visit next link: http://%s/activate/%s",
                     user.getUsername(),
+                    hostname,
                     user.getActivationCode()
             );
 
@@ -129,5 +135,17 @@ public class UserService implements UserDetailsService {
         if (isEmailChanged) {
             sendMessage(user);
         }
+    }
+
+    public void subscribe(User currentUser, User user) {
+        user.getSubscribers().add(currentUser);
+
+        userRepo.save(user);
+    }
+
+    public void unsubscribe(User currentUser, User user) {
+        user.getSubscribers().remove(currentUser);
+
+        userRepo.save(user);
     }
 }

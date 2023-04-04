@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:include="fragments/common :: headFragment"></head>
+<head>
+    <title>registration</title>
+    <div th:replace="fragments/common :: headFragment"></div>
+</head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" th:include="fragments/navbar :: navFragment"></nav>
 <div class="container mt-5">
@@ -40,7 +43,7 @@
             </div>
         </div>
         <div class="col-sm-6">
-            <div class="g-recaptcha" data-sitekey="siteKey"></div>
+            <div class="g-recaptcha" data-sitekey="6LfQITglAAAAAEkes_KUHdfXOYX9y2t2mYOjxrcm"></div>
             <div th:if="${captchaError != null}">
                 <div class="alert alert-danger" th:text="${captchaError}"></div>
             </div>

@@ -1,25 +1,18 @@
-package regexit.feeder.domain;
+package regexit.feeder.domain.dto;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import regexit.feeder.domain.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
-@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class Message {
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
+public class MessageDto {
+    private Integer id;
 
     @NotBlank(message = "Please fill the message")
     @Length(max = 2048, message = "Message too long (more than 2kB)")
@@ -32,9 +25,4 @@ public class Message {
     private User author;
 
     private String filename;
-
-    public String getAuthorName() {
-        return author != null ? author.getUsername() : "<none>";
-    }
-
 }

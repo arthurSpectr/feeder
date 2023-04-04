@@ -1,12 +1,3 @@
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-
-
-<!--<div th:include="fragments/security :: securityFragment"></div>-->
-<!--<#include "security.ftl">-->
-<form action="/login" method="post" th:include="fragments/login :: loginFragment"></form>
-<!--<#import "login.ftl" as l>-->
-
 <nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="navFragment">
 
     <a class="navbar-brand" href="/">Feeder</a>
@@ -26,18 +17,15 @@
             <li class="nav-item" th:if="${isAdmin}">
                 <a class="nav-link" href="/user">User list</a>
             </li>
+            <li class="nav-item" th:if="${currentUserId != null}">
+                <a class="nav-link" th:href="@{${'/user-messages/' + currentUserId}}">My Messages</a>
+            </li>
             <li class="nav-item" th:if="${user != null}">
                 <a class="nav-link" href="/user/profile">Profile</a>
             </li>
         </ul>
 
         <div class="navbar-text mr-3" th:text="${name}" th:value="${name}"></div>
-<!--        <div>-->
-            <form th:action="@{/logout}" method="post" th:include="fragments/login :: logoutFragment"></form>
-<!--    </div>-->
+        <div th:replace="fragments/login :: logoutFragment"></div>
     </div>
 </nav>
-
-
-</body>
-</html>

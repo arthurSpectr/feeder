@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import regexit.feeder.domain.User;
 
 import javax.servlet.http.HttpSession;
 
@@ -35,6 +36,11 @@ public class ModelAttributesAdvice {
 
         if (authentication != null) {
             model.addAttribute("user", authentication.getPrincipal());
+
+            if(authentication.getPrincipal() instanceof User) {
+                model.addAttribute("currentUserId", ((User)authentication.getPrincipal()).getId());
+            }
+
         }
     }
 
