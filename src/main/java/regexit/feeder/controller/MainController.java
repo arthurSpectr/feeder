@@ -3,6 +3,7 @@ package regexit.feeder.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,9 @@ import regexit.feeder.domain.Message;
 import regexit.feeder.domain.User;
 import regexit.feeder.domain.dto.MessageDto;
 import regexit.feeder.repos.MessageRepo;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 
 import javax.validation.Valid;
 import java.io.File;

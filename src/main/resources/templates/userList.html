@@ -1,25 +1,20 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <title>user list</title>
-    <div th:replace="fragments/common :: headFragment"></div>
-</head>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="fragments/common :: headFragment"></head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" th:include="fragments/navbar :: navFragment"></nav>
 <div class="container mt-5">
 
-    <div th:each="user : ${users}">
-
-    </div>
-    <table>
+    <table class="table table-hover">
         <thead>
-        <tr>
+        <tr scope="col">
             <td>Name</td>
             <td>Role</td>
+            <td>Action</td>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user : ${users}">
+        <tr scope="col" th:each="user : ${users}">
             <td th:text="${user.username}"></td>
             <td th:text="${user.roles}"></td>
             <td><a th:href="@{/user/{id}(id=${user.id})}">edit</a></td>
@@ -27,6 +22,7 @@
         </tbody>
 
     </table>
+
 
 </div>
 

@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- fix when trying to add message in user-messages, "userMessages" method and "add" method-->
+<div th:fragment="messageEdit">
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+       aria-controls="collapseExample">
+        Message editor
+    </a>
+
+    <div class="collapse" th:attr="class=${message != null ? 'collapse show' : 'collapse'}"
+         id="collapseExample">
+        <div class="form-group mt-3">
+            <form method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <input type="text" th:attr="class=${textError != null ? 'form-control is-invalid' : 'form-control'}"
+                           name="text" placeholder="Введите сообщение"
+                           th:value="${message != null ? message.text : ''}"/>
+
+                    <div class="invalid-feedback" th:if="${textError != null}" th:text="${textError}"></div>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="tag" placeholder="Тэг"
+                           th:value="${message != null ? message.tag : ''}"/>
+                    <div class="invalid-feedback" th:if="${tagError != null}" th:text="${tagError}"></div>
+                </div>
+                <div class="form-group">
+                    <div class="custom-file">
+                        <input type="file" name="file" id="customFile"/>
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                    </div>
+                </div>
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                <input type="hidden" name="id" th:if="${message != null}" th:value="${message.id}"/>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>
