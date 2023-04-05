@@ -8,5 +8,7 @@ import regexit.feeder.domain.Message;
 import java.util.List;
 
 public interface MessageRepo extends JpaRepository<Message, Long> {
-    List<Message> findByTag(String tag);
+    Page<Message> findAll(Pageable pageable);
+
+    Page<Message> findByTag(String tag, Pageable pageable);
 }

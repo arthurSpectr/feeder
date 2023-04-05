@@ -2,8 +2,6 @@ package regexit.feeder.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,43 +14,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import regexit.feeder.domain.Message;
 import regexit.feeder.domain.User;
-import regexit.feeder.domain.dto.MessageDto;
-import regexit.feeder.repos.MessageRepo;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import regexit.feeder.service.MessageService;
+import regexit.feeder.service.paging.Paged;
 
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 @Controller
 public class MainController {
-    @Autowired
-    private MessageRepo messageRepo;
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    @Autowired
+    private MessageService messageService;
 
     @GetMapping("/")
-    public String greeting(Map<String, Object> model) {
+    public String greeting() {
         return "greeting";
     }
 
     @GetMapping("/main")
-    public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
-        Iterable<Message> messages = messageRepo.findAll();
+    public String main(@RequestParam(required = false, defaultValue = "") String filter,
+                       Model model,
+                       @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+                       @RequestParam(value = "size", required = false, defaultValue = "12") int size) {
+        Paged<Message> messagePaged = messageService.findByFilterOrDefault(filter, pageNumber, size);
 
-        if (filter != null && !filter.isEmpty()) {
-            messages = messageRepo.findByTag(filter);
-        } else {
-            messages = messageRepo.findAll();
-        }
-
-        model.addAttribute("messages", messages);
+        model.addAttribute("page", messagePaged);
+        model.addAttribute("url", "/main");
         model.addAttribute("filter", filter);
 
         return "main";
@@ -74,16 +62,21 @@ public class MainController {
             model.mergeAttributes(errorsMap);
             model.addAttribute("message", message);
         } else {
-            saveFile(message, file);
+            messageService.save(message, file);
 
             model.addAttribute("message", null);
-
-            messageRepo.save(message);
         }
 
-        Iterable<Message> messages = messageRepo.findAll();
+        Paged<Message> messagePaged;
+        if(model.getAttribute("page") != null) {
+            Paged<Message> oldMessagePaged = (Paged<Message>) model.getAttribute("page");
+            messagePaged = messageService.findByFilterOrDefault(null, oldMessagePaged.getPaging().getPageNumber(), 12);
+        } else {
+            messagePaged = messageService.findByFilterOrDefault(null, 1, 12);
+        }
 
-        model.addAttribute("messages", messages);
+
+        model.addAttribute("page", messagePaged);
 
         return "main";
     }
@@ -93,15 +86,17 @@ public class MainController {
             @AuthenticationPrincipal User currentUser,
             @PathVariable User user,
             Model model,
-            @RequestParam(required = false) Message message
+            @RequestParam(required = false) Message message,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+            @RequestParam(value = "size", required = false, defaultValue = "12") int size
     ) {
-        Set<Message> messages = user.getMessages();
+        Paged<Message> messagePaged = messageService.findByFilterOrDefault(null, pageNumber, size);
 
+        model.addAttribute("page", messagePaged);
         model.addAttribute("userChannel", user);
         model.addAttribute("subscriptionsCount", user.getSubscriptions().size());
         model.addAttribute("subscribersCount", user.getSubscribers().size());
         model.addAttribute("isSubscriber", user.getSubscribers().contains(currentUser));
-        model.addAttribute("messages", messages);
         model.addAttribute("message", message);
         model.addAttribute("isCurrentUser", currentUser.equals(user));
 
@@ -126,28 +121,10 @@ public class MainController {
                 message.setTag(tag);
             }
 
-            saveFile(message, file);
-
-            messageRepo.save(message);
+            messageService.saveFile(message, file);
         }
 
         return "redirect:/user-messages/" + user;
     }
 
-    private void saveFile(@Valid Message message, @RequestParam("file") MultipartFile file) throws IOException {
-        if (file != null && !file.getOriginalFilename().isEmpty()) {
-            File uploadDir = new File(uploadPath);
-
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
-            }
-
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + file.getOriginalFilename();
-
-            file.transferTo(new File(uploadPath + "/" + resultFilename));
-
-            message.setFilename(resultFilename);
-        }
-    }
 }
