@@ -31,7 +31,6 @@ public class MessageService {
         Page<Message> page;
 
         if (filter != null && !filter.isEmpty()) {
-//            page = messageRepo.findByTag(filter, pageable);
             page = messageRepo.findByTag(filter, PageRequest.of(pageNumber - 1, size, Sort.by(Sort.Direction.DESC, "id")));
         } else {
             page = messageRepo.findAll(PageRequest.of(pageNumber - 1, size, Sort.by(Sort.Direction.DESC, "id")));
