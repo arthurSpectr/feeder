@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import regexit.feeder.domain.Message;
+import regexit.feeder.domain.User;
+import regexit.feeder.domain.dto.MessageDto;
 import regexit.feeder.repos.MessageRepo;
 import regexit.feeder.service.paging.Paged;
 import regexit.feeder.service.paging.Paging;
@@ -27,14 +29,21 @@ public class MessageService {
     @Autowired
     private MessageRepo messageRepo;
 
-    public Paged<Message> findByFilterOrDefault(String filter, int pageNumber, int size) {
-        Page<Message> page;
+    public Paged<MessageDto> findByFilterOrDefault(String filter, int pageNumber, int size, User user) {
+        Page<MessageDto> page;
 
         if (filter != null && !filter.isEmpty()) {
-            page = messageRepo.findByTag(filter, PageRequest.of(pageNumber - 1, size, Sort.by(Sort.Direction.DESC, "id")));
+            page = messageRepo.findByTag(filter, PageRequest.of(pageNumber - 1, size, Sort.by(Sort.Direction.DESC, "id")), user);
         } else {
-            page = messageRepo.findAll(PageRequest.of(pageNumber - 1, size, Sort.by(Sort.Direction.DESC, "id")));
+            page = messageRepo.findAll(PageRequest.of(pageNumber - 1, size, Sort.by(Sort.Direction.DESC, "id")), user);
         }
+
+        return new Paged<>(page, Paging.of(page.getTotalPages() + 1, pageNumber, size));
+    }
+
+    public Paged<MessageDto> findByUser(User author, int pageNumber, int size, User user) {
+        Page<MessageDto> page = messageRepo.findByAuthor(author,
+                PageRequest.of(pageNumber - 1, size, Sort.by(Sort.Direction.DESC, "id")), user);
 
         return new Paged<>(page, Paging.of(page.getTotalPages() + 1, pageNumber, size));
     }

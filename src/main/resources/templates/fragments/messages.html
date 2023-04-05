@@ -8,11 +8,18 @@
                 <span th:text="${message.text}"></span><br/>
                 #<i th:text="${message.tag}"></i>
             </div>
-            <a th:href="@{${'/user-messages/' + message.author.id}}">
-                <div class="card-footer text-muted" th:text="${message.authorName}"></div>
-            </a>
-            <a class="btn btn-primary" th:if="${message.author.id == currentUserId}"
-               th:href="@{${'/user-messages/' + message.author.id + '?message=' + message.id}}">Edit</a>
+            <div class="card-footer text-muted container">
+                <div class="row">
+                    <a class="col align-self-center" th:href="@{${'/user-messages/' + message.author.id}}" th:text="${message.authorName}"></a>
+                    <a class="col align-self-center" th:href="@{${'/messages/' + message.id + '/like'}}">
+                        <i th:if="${message.meLiked}" class="fas fa-heart"></i>
+                        <i th:unless="${message.meLiked}" class="far fa-heart"></i>
+                        <span th:text="${message.likes}"></span>
+                    </a>
+                    <a class="col btn btn-primary" th:if="${message.author.id == currentUserId}"
+                       th:href="@{${'/user-messages/' + message.author.id + '?message=' + message.id}}">Edit</a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -23,13 +30,13 @@
     <nav aria-label="Page navigation" class="paging">
         <ul class="pagination justify-content-center" th:if="${page.page.totalPages > 1}">
             <li class="page-item" th:classappend="${!page.paging.isPrevEnabled()? 'disabled' : ''}">
-                <a class="page-link" th:href="@{'/main/?pageNumber=' + ${page.paging.pageNumber - 1}}"
+                <a class="page-link" th:href="@{${url} + '?pageNumber=' + ${page.paging.pageNumber - 1}}"
                    tabindex="-1">Previous</a>
             </li>
             <th:block th:each="item : ${page.paging.getItems()}">
                 <li class="page-item" th:classappend="${item.index == page.paging.pageNumber ? 'active' : ''}"
                     th:if="${item.pageItemType.name() == 'PAGE'}">
-                    <a class="page-link" th:href="@{'/main/?pageNumber=' + ${item.index}}"
+                    <a class="page-link" th:href="@{${url} + '?pageNumber=' + ${item.index}}"
                        th:text="${item.index}"></a>
                 </li>
                 <li class="page-item disabled" th:if="${item.pageItemType.name() == 'DOTS'}">
@@ -37,7 +44,7 @@
                 </li>
             </th:block>
             <li class="page-item" th:classappend="${!page.paging.isNextEnabled()? 'disabled' : ''}">
-                <a class="page-link" th:href="@{'/main/?pageNumber=' + ${page.paging.pageNumber + 1}}">Next</a>
+                <a class="page-link" th:href="@{${url} + '?pageNumber=' + ${page.paging.pageNumber + 1}}">Next</a>
             </li>
         </ul>
     </nav>

@@ -7,22 +7,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import regexit.feeder.domain.Message;
 import regexit.feeder.domain.User;
+import regexit.feeder.domain.dto.MessageDto;
 import regexit.feeder.service.MessageService;
 import regexit.feeder.service.paging.Paged;
 
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 @Controller
-public class MainController {
+public class MessageController {
 
     @Autowired
     private MessageService messageService;
@@ -36,8 +38,9 @@ public class MainController {
     public String main(@RequestParam(required = false, defaultValue = "") String filter,
                        Model model,
                        @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
-                       @RequestParam(value = "size", required = false, defaultValue = "12") int size) {
-        Paged<Message> messagePaged = messageService.findByFilterOrDefault(filter, pageNumber, size);
+                       @RequestParam(value = "size", required = false, defaultValue = "12") int size,
+                       @AuthenticationPrincipal User user) {
+        Paged<MessageDto> messagePaged = messageService.findByFilterOrDefault(filter, pageNumber, size, user);
 
         model.addAttribute("page", messagePaged);
         model.addAttribute("url", "/main");
@@ -67,12 +70,12 @@ public class MainController {
             model.addAttribute("message", null);
         }
 
-        Paged<Message> messagePaged;
+        Paged<MessageDto> messagePaged;
         if(model.getAttribute("page") != null) {
             Paged<Message> oldMessagePaged = (Paged<Message>) model.getAttribute("page");
-            messagePaged = messageService.findByFilterOrDefault(null, oldMessagePaged.getPaging().getPageNumber(), 12);
+            messagePaged = messageService.findByFilterOrDefault(null, oldMessagePaged.getPaging().getPageNumber(), 12, user);
         } else {
-            messagePaged = messageService.findByFilterOrDefault(null, 1, 12);
+            messagePaged = messageService.findByFilterOrDefault(null, 1, 12, user);
         }
 
 
@@ -90,7 +93,7 @@ public class MainController {
             @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
             @RequestParam(value = "size", required = false, defaultValue = "12") int size
     ) {
-        Paged<Message> messagePaged = messageService.findByFilterOrDefault(null, pageNumber, size);
+        Paged<MessageDto> messagePaged = messageService.findByUser(user, pageNumber, size, currentUser);
 
         model.addAttribute("page", messagePaged);
         model.addAttribute("userChannel", user);
@@ -98,6 +101,7 @@ public class MainController {
         model.addAttribute("subscribersCount", user.getSubscribers().size());
         model.addAttribute("isSubscriber", user.getSubscribers().contains(currentUser));
         model.addAttribute("message", message);
+        model.addAttribute("url", "/user-messages/" + user.getId());
         model.addAttribute("isCurrentUser", currentUser.equals(user));
 
         return "userMessages";
@@ -125,6 +129,30 @@ public class MainController {
         }
 
         return "redirect:/user-messages/" + user;
+    }
+
+    @GetMapping("/messages/{message}/like")
+    public String like(
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable Message message,
+            RedirectAttributes redirectAttributes,
+            @RequestHeader(required = false) String referer
+    ) {
+        Set<User> likes = message.getLikes();
+
+        if (likes.contains(currentUser)) {
+            likes.remove(currentUser);
+        } else {
+            likes.add(currentUser);
+        }
+
+        UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
+
+        components.getQueryParams()
+                .entrySet()
+                .forEach(pair -> redirectAttributes.addAttribute(pair.getKey(), pair.getValue()));
+
+        return "redirect:" + components.getPath();
     }
 
 }
