@@ -1,5 +1,6 @@
 package regexit.feeder.service;
 
+import io.github.pixee.security.Filenames;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -63,7 +64,7 @@ public class MessageService {
             }
 
             String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + file.getOriginalFilename();
+            String resultFilename = uuidFile + "." + Filenames.toSimpleFileName(file.getOriginalFilename());
 
             file.transferTo(new File(uploadPath + "/" + resultFilename));
 
