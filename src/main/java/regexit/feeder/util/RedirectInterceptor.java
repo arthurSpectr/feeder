@@ -1,5 +1,6 @@
 package regexit.feeder.util;
 
+import io.github.pixee.security.Newlines;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -12,7 +13,7 @@ public class RedirectInterceptor extends HandlerInterceptorAdapter {
         if (modelAndView != null) {
             String args = request.getQueryString() != null ? request.getQueryString() : "";
             String url = request.getRequestURI().toString() + "?" + args;
-            response.setHeader("Turbolinks-Location", url);
+            response.setHeader("Turbolinks-Location", Newlines.stripAll(url));
         }
     }
 }
